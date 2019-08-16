@@ -5,8 +5,8 @@ docker-compose up -d postgres
 sleep 7
 docker-compose up -d camunda
 sleep 7
-docker-compose up -d pm4pyws
+docker-compose up -d camunda-exporter
 sleep 7
-docker-compose up camunda-exporter
+docker-compose up -d pm4pyws
 sleep 7
 

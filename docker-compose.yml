@@ -36,17 +36,17 @@ services:
         ports:
           - '80:80'
         volumes:
-          - /app/files:/opt/files
+          - /opt/files:/app/files
 
     camunda-exporter:
         image: javert899/incremental-camunda-parquet-exporter:latest
         container_name: camunda-exporter
         volumes:
-          - /app/files:/opt/files
-          - /app/extraction_consts:/opt/extraction_consts
+          - /opt/files:/app/files
+          - /opt/extraction_consts:/app/extraction_consts
         environment:
           TARGET_HOST: postgres
-          TARGET_PATH: /app/extraction_consts/target
+          TARGET_PATH: /app/files/event_logs
           TIMESTAMP_PATH: /app/extraction_consts/timestamp.dump
           NO_PARTITIONS: /app/extraction_consts/no_part.dump
           POSTGRES_USER: camunda
