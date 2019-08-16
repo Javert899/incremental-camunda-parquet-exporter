@@ -132,4 +132,5 @@ if __name__ == "__main__":
     initialize_timestamp_path()
     while True:
         extract_events_from_db()
+        break
         time.sleep(Shared.sleep_schedule)
