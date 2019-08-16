@@ -13,7 +13,7 @@ class Shared:
     target_host = os.environ['TARGET_HOST'] if 'TARGET_HOST' in os.environ else 'localhost'
     target_path = os.environ['TARGET_PATH'] if 'TARGET_PATH' in os.environ else 'target'
     timestamp_path = os.environ['TIMESTAMP_PATH'] if 'TIMESTAMP_PATH' in os.environ else 'timestamp.dump'
-    no_events_partition_path = os.environ['NO_EV_PART_PATH'] if 'NO_EV_PART_PATH' in os.environ else 'no_ev.dump'
+    no_partitions = os.environ['NO_PARTITIONS'] if 'NO_PARTITIONS' in os.environ else 'no_part.dump'
     postgres_user = os.environ['POSTGRES_USER'] if 'POSTGRES_USER' in os.environ else 'camunda'
     postgres_password = os.environ['POSTGRES_PASSWORD'] if 'POSTGRES_PASSWORD' in os.environ else 'camunda'
     postgres_db = os.environ['POSTGRES_DB'] if 'POSTGRES_DB' in os.environ else 'process-engine'
@@ -41,11 +41,20 @@ def read_timestamp_path():
     return int(open(Shared.timestamp_path, "r").readline())
 
 
-def read_no_ev_part_path():
-    if os.path.exists(Shared.no_events_partition_path):
-        return int(open(Shared.no_events_partition_path, "r").readline())
+def write_timestamp(tim):
+    F = open(Shared.timestamp_path, "w")
+    F.write(str(int(tim))+"\n")
+    F.close()
+
+def read_no_part():
+    if os.path.exists(Shared.no_partitions):
+        return int(open(Shared.no_partitions, "r").readline())
     return None
 
+def write_no_part(no):
+    F = open(Shared.no_partitions, "w")
+    F.write(str(int(no))+"\n")
+    F.close()
 
 def write_partitions(partitions):
     for partition in partitions:
@@ -69,6 +78,7 @@ def extract_events_from_db():
     for row in rows:
         table_schema.append(row[0])
     this_timestamp = read_timestamp_path()
+    Shared.desidered_number_of_partitions = read_no_part()
     cur.execute("SELECT * FROM public.act_hi_actinst")
     rows = cur.fetchall()
     if Shared.desidered_number_of_partitions is None:
@@ -76,6 +86,7 @@ def extract_events_from_db():
         print("len_rows = " + str(len_rows))
         Shared.desidered_number_of_partitions = math.floor(len_rows / Shared.desidered_number_of_events_per_partition)
         print("desidered_number_of_partitions =" + str(Shared.desidered_number_of_partitions))
+        write_no_part(Shared.desidered_number_of_partitions)
     partitions = {}
     max_timestamp = -1
     no_chunks = 1
@@ -100,6 +111,8 @@ def extract_events_from_db():
 
     print("writing chunk " + str(no_chunks))
     write_partitions(partitions)
+
+    write_timestamp(max_timestamp)
 
 
 if __name__ == "__main__":
