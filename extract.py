@@ -1,7 +1,6 @@
 import os
 import shutil
 import psycopg2
-from dateutil import parser
 import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -89,7 +88,7 @@ def extract_events_from_db():
         this_row = {table_schema[i]: row[i] for i in range(len(row))}
         this_row["case:concept:name"] = str(this_row["proc_inst_id_"])
         this_row["concept:name"] = this_row["act_name_"]
-        this_row["time:timestamp"] = parser.parse(this_row["start_time_"])
+        this_row["time:timestamp"] = this_row["start_time_"]
         partition = str(abs(hash(this_row["case:concept:name"])) % Shared.desidered_number_of_partitions)
         #this_row["@@partition"] = abs(hash(this_row["case:concept:name"]))
         max_timestamp = max(max_timestamp, this_row["time:timestamp"].timestamp())
