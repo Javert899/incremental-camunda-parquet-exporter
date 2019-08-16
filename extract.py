@@ -19,12 +19,12 @@ class Shared:
     postgres_user = os.environ['POSTGRES_USER'] if 'POSTGRES_USER' in os.environ else 'camunda'
     postgres_password = os.environ['POSTGRES_PASSWORD'] if 'POSTGRES_PASSWORD' in os.environ else 'camunda'
     postgres_db = os.environ['POSTGRES_DB'] if 'POSTGRES_DB' in os.environ else 'process-engine'
-    sleep_schedule = os.environ['SLEEP_SCHEDULE'] if 'SLEEP_SCHEDULE' in os.environ else 30
-    desidered_number_of_events_per_partition = os.environ['NUM_EVENTS_PARTITION'] if 'NUM_EVENTS_PARTITION' in os.environ else 10
+    sleep_schedule = os.environ['SLEEP_SCHEDULE'] if 'SLEEP_SCHEDULE' in os.environ else 600
+    desidered_number_of_events_per_partition = os.environ['NUM_EVENTS_PARTITION'] if 'NUM_EVENTS_PARTITION' in os.environ else 10000
     # the following has the priority over the desidered number of events per partition, if defined
     # it is also written to a file
     desidered_number_of_partitions = os.environ['NUM_PARTITIONS'] if 'NUM_PARTITIONS' in os.environ else None
-    num_events_chunk = os.environ['NUM_EVENTS_CHUNK'] if 'NUM_EVENTS_CHUNK' in os.environ else 10
+    num_events_chunk = os.environ['NUM_EVENTS_CHUNK'] if 'NUM_EVENTS_CHUNK' in os.environ else 10000
 
 
 def initialize_target_path():
@@ -93,7 +93,7 @@ def extract_events_from_db():
     if Shared.desidered_number_of_partitions is None:
         len_rows = len(rows)
         print("len_rows = " + str(len_rows))
-        Shared.desidered_number_of_partitions = math.floor(len_rows / Shared.desidered_number_of_events_per_partition)
+        Shared.desidered_number_of_partitions = math.ceil(len_rows / Shared.desidered_number_of_events_per_partition)
         print("desidered_number_of_partitions =" + str(Shared.desidered_number_of_partitions))
         write_no_part(Shared.desidered_number_of_partitions)
     partitions = {}
@@ -139,5 +139,4 @@ if __name__ == "__main__":
     initialize_timestamp_path()
     while True:
         extract_events_from_db()
-        break
         time.sleep(Shared.sleep_schedule)
