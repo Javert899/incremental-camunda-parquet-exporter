@@ -21,13 +21,13 @@ class Shared:
     postgres_user = os.environ['POSTGRES_USER'] if 'POSTGRES_USER' in os.environ else 'camunda'
     postgres_password = os.environ['POSTGRES_PASSWORD'] if 'POSTGRES_PASSWORD' in os.environ else 'camunda'
     postgres_db = os.environ['POSTGRES_DB'] if 'POSTGRES_DB' in os.environ else 'process-engine'
-    sleep_schedule = os.environ['SLEEP_SCHEDULE'] if 'SLEEP_SCHEDULE' in os.environ else 600
-    desidered_number_of_events_per_partition = os.environ[
-        'NUM_EVENTS_PARTITION'] if 'NUM_EVENTS_PARTITION' in os.environ else 10000
+    sleep_schedule = int(os.environ['SLEEP_SCHEDULE']) if 'SLEEP_SCHEDULE' in os.environ else 600
+    desidered_number_of_events_per_partition = int(os.environ[
+        'NUM_EVENTS_PARTITION']) if 'NUM_EVENTS_PARTITION' in os.environ else 10000
     # the following has the priority over the desidered number of events per partition, if defined
     # it is also written to a file
     desidered_number_of_partitions = None
-    num_events_chunk = os.environ['NUM_EVENTS_CHUNK'] if 'NUM_EVENTS_CHUNK' in os.environ else 10000
+    num_events_chunk = int(os.environ['NUM_EVENTS_CHUNK']) if 'NUM_EVENTS_CHUNK' in os.environ else 10000
     pm4pyws_db_event_logs = os.environ['PM4PYWS_DB_ELOG'] if 'PM4PYWS_DB_ELOG' in os.environ else 'event_logs.db'
 
 
