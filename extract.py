@@ -4,6 +4,7 @@ import psycopg2
 import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
+import math
 
 # requires postgresql-common and libpq-dev
 
@@ -73,7 +74,7 @@ def extract_events_from_db():
     if Shared.desidered_number_of_partitions is None:
         len_rows = len(rows)
         print("len_rows = " + str(len_rows))
-        Shared.desidered_number_of_partitions = len_rows / Shared.desidered_number_of_events_per_partition
+        Shared.desidered_number_of_partitions = math.floor(len_rows / Shared.desidered_number_of_events_per_partition)
         print("desidered_number_of_partitions =" + str(Shared.desidered_number_of_partitions))
     partitions = {}
     max_timestamp = -1
