@@ -7,4 +7,7 @@ RUN pip install pyarrow==0.13.0 pandas>=0.24.1 psycopg2
 
 COPY . /
 
+RUN cd /opt && mkdir files
+RUN cd /opt && mkdir extraction_consts
+
 ENTRYPOINT ["python", "main.py"]
