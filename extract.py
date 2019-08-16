@@ -5,6 +5,8 @@ import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
 import math
+import time
+import datetime
 
 # requires postgresql-common and libpq-dev
 
@@ -68,6 +70,7 @@ def write_partitions(partitions):
 
 
 def extract_events_from_db():
+    print(time.time(),"start extraction")
     conn = psycopg2.connect(
         "dbname='" + Shared.postgres_db + "' user='" + Shared.postgres_user + "' host='" + Shared.target_host + "' password='" + Shared.postgres_password + "'")
     cur = conn.cursor()
@@ -78,8 +81,10 @@ def extract_events_from_db():
     for row in rows:
         table_schema.append(row[0])
     this_timestamp = read_timestamp_path()
+    this_timestamp2 = datetime.datetime.fromtimestamp(this_timestamp).strftime("%Y-%m-%d %H:%M:%S")
+    print("this_timestamp2",this_timestamp2)
     Shared.desidered_number_of_partitions = read_no_part()
-    cur.execute("SELECT * FROM public.act_hi_actinst")
+    cur.execute("SELECT * FROM public.act_hi_actinst WHERE start_time_ > '"+this_timestamp2+"'")
     rows = cur.fetchall()
     if Shared.desidered_number_of_partitions is None:
         len_rows = len(rows)
