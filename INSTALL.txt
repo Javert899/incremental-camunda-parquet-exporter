@@ -1,0 +1,4 @@
+On Linux, the following packages needs to be installed:
+
+postgresql-common
+libpq-dev
