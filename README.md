@@ -1,5 +1,9 @@
 Incremental process Mining exporter for the Camunda workflow management system (supported by PostgreSQL database)
 
+This extractor, after doing an initial extraction of the event log from the Camunda database, updates it periodically
+with the new events inserted into the database.
+
+Moreover, the BPMN diagram in Camunda can be exported (by doing copy-process-models.sh).
 
 ----------------------------------
 
