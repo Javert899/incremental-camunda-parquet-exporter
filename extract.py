@@ -123,7 +123,8 @@ def extract_events_from_db():
 
     print("total number of events extracted: "+str(no_events))
 
-    write_timestamp(max_timestamp)
+    if max_timestamp > -1:
+        write_timestamp(max_timestamp)
 
 
 if __name__ == "__main__":
