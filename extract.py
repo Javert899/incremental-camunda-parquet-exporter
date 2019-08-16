@@ -59,14 +59,18 @@ def write_no_part(no):
     F.close()
 
 def write_partitions(partitions):
-    for partition in partitions:
-        target_path = os.path.join(Shared.target_path, partition) + ".parquet"
-        df = pd.DataFrame(partitions[partition])
-        if os.path.exists(target_path):
-            df0 = pq.read_pandas(target_path).to_pandas()
-            df = pd.concat([df0, df])
-        table = pa.Table.from_pandas(df)
-        pq.write_table(table, target_path)
+    for process in partitions:
+        process_path = os.path.join(Shared.target_path, process) + "parquet"
+        if not os.path.exists(process_path):
+            os.mkdir(process_path)
+        for partition in partitions[process]:
+            target_path = os.path.join(process_path, partition) + ".parquet"
+            df = pd.DataFrame(partitions[process][partition])
+            if os.path.exists(target_path):
+                df0 = pq.read_pandas(target_path).to_pandas()
+                df = pd.concat([df0, df])
+            table = pa.Table.from_pandas(df)
+            pq.write_table(table, target_path)
 
 
 def extract_events_from_db():
@@ -105,6 +109,9 @@ def extract_events_from_db():
             partitions = {}
             no_chunks = no_chunks + 1
         this_row = {table_schema[i]: row[i] for i in range(len(row))}
+        process = this_row["proc_def_key_"]
+        if not process in partitions:
+            partitions[process] = {}
         this_row["case:concept:name"] = str(this_row["proc_inst_id_"])
         this_row["concept:name"] = this_row["act_name_"]
         this_row["time:timestamp"] = this_row["start_time_"]
@@ -114,9 +121,9 @@ def extract_events_from_db():
             this_row["org:resource"] = this_row["assignee_"]
         max_timestamp = max(max_timestamp, this_row["time:timestamp"].timestamp())
 
-        if not partition in partitions:
-            partitions[partition] = []
-        partitions[partition].append(this_row)
+        if not partition in partitions[process]:
+            partitions[process][partition] = []
+        partitions[process][partition].append(this_row)
 
     print("writing chunk " + str(no_chunks))
     write_partitions(partitions)
