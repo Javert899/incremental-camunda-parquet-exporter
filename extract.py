@@ -18,7 +18,7 @@ class Shared:
     postgres_password = os.environ['POSTGRES_PASSWORD'] if 'POSTGRES_PASSWORD' in os.environ else 'camunda'
     postgres_db = os.environ['POSTGRES_DB'] if 'POSTGRES_DB' in os.environ else 'process-engine'
     sleep_schedule = os.environ['SLEEP_SCHEDULE'] if 'SLEEP_SCHEDULE' in os.environ else 60
-    desidered_number_of_events_per_partition = os.environ['NUM_EVENTS_PARTITION'] if 'NUM_EVENTS_PARTITION' else 10
+    desidered_number_of_events_per_partition = os.environ['NUM_EVENTS_PARTITION'] if 'NUM_EVENTS_PARTITION' in os.environ else 10
     # the following has the priority over the desidered number of events per partition, if defined
     # it is also written to a file
     desidered_number_of_partitions = os.environ['NUM_PARTITIONS'] if 'NUM_PARTITIONS' in os.environ else None
