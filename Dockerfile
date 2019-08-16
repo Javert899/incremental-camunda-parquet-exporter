@@ -11,4 +11,4 @@ RUN cd / && mkdir app
 RUN cd /app && mkdir files
 RUN cd /app && mkdir extraction_consts
 
-ENTRYPOINT ["python", "main.py"]
+ENTRYPOINT ["python", "extract.py"]
