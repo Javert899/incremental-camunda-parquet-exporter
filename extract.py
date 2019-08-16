@@ -40,7 +40,7 @@ def initialize_timestamp_path():
 
 
 def read_timestamp_path():
-    return int(open(Shared.timestamp_path, "r").readline())
+    return float(open(Shared.timestamp_path, "r").readline())
 
 
 def write_timestamp(tim):
