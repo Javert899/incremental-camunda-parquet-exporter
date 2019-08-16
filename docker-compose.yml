@@ -1,0 +1,31 @@
+version: '3.3'
+
+services:
+    postgres:
+      container_name: postgres
+      image: postgres:latest
+      restart: always
+      environment:
+        POSTGRES_USER: camunda
+        POSTGRES_PASSWORD: camunda
+        POSTGRES_DB: process-engine
+        PGDATA: /var/lib/postgresql/data/pgdata
+      ports:
+        - "5432:5432"
+      volumes:
+        - ./data/postgres/pgdata:/var/lib/postgresql/data/pgdata
+
+    camunda:
+        image: camunda/camunda-bpm-platform:latest
+        container_name: camunda_bpm
+        ports:
+            - '8080:8080'
+        environment:
+            DB_DRIVER: org.postgresql.Driver
+            DB_URL: jdbc:postgresql://postgres:5432/process-engine
+            DB_USERNAME: camunda
+            DB_PASSWORD: camunda
+            WAIT_FOR: postgres:5432
+            WAIT_FOR_TIMEOUT: 60
+        depends_on:
+            - 'postgres'
