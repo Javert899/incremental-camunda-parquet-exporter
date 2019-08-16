@@ -60,7 +60,7 @@ def write_no_part(no):
 
 def write_partitions(partitions):
     for process in partitions:
-        process_path = os.path.join(Shared.target_path, process) + "parquet"
+        process_path = os.path.join(Shared.target_path, process) + ".parquet"
         if not os.path.exists(process_path):
             os.mkdir(process_path)
         for partition in partitions[process]:
