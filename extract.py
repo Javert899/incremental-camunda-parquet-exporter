@@ -95,7 +95,9 @@ def extract_events_from_db():
     partitions = {}
     max_timestamp = -1
     no_chunks = 1
+    no_events = 0
     for index, row in enumerate(rows):
+        no_events = no_events + 1
         if index > 0 and index % Shared.num_events_chunk == 0:
             print("writing chunk "+str(no_chunks))
             write_partitions(partitions)
@@ -108,6 +110,8 @@ def extract_events_from_db():
         this_row["time:timestamp"] = this_row["start_time_"]
         partition = str(abs(hash(this_row["case:concept:name"])) % Shared.desidered_number_of_partitions)
         #this_row["@@partition"] = abs(hash(this_row["case:concept:name"]))
+        if "assignee_" in this_row:
+            this_row["org:resource"] = this_row["assignee_"]
         max_timestamp = max(max_timestamp, this_row["time:timestamp"].timestamp())
 
         if not partition in partitions:
@@ -116,6 +120,8 @@ def extract_events_from_db():
 
     print("writing chunk " + str(no_chunks))
     write_partitions(partitions)
+
+    print("total number of events extracted: "+str(no_events))
 
     write_timestamp(max_timestamp)
 
