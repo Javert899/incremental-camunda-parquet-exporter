@@ -54,7 +54,7 @@ def write_partitions(partitions):
             df0 = pq.read_pandas(target_path).to_pandas()
             df = pd.concat([df0, df])
         table = pa.Table.from_pandas(df)
-        pq.write_table(df, target_path)
+        pq.write_table(table, target_path)
 
 
 def extract_events_from_db():
