@@ -9,4 +9,4 @@ docker-compose up -d camunda-exporter
 sleep 7
 docker-compose up -d pm4pyws
 sleep 7
-
+bash copy-process-models.sh
