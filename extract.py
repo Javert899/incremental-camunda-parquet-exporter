@@ -150,7 +150,7 @@ def update_db_event_logs():
 
         content = os.listdir(Shared.target_path)
 
-        for log_file in os.listdir(content):
+        for log_file in content:
             log_name = log_file.split(".parquet")[0]
             log_path = os.path.join(Shared.target_path, log_file)
             curs.execute("INSERT INTO EVENT_LOGS VALUES ('" + log_name + "','" + log_path + "',0,1,0)")
