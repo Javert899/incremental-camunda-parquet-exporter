@@ -26,7 +26,7 @@ class Shared:
         'NUM_EVENTS_PARTITION'] if 'NUM_EVENTS_PARTITION' in os.environ else 10000
     # the following has the priority over the desidered number of events per partition, if defined
     # it is also written to a file
-    desidered_number_of_partitions = os.environ['NUM_PARTITIONS'] if 'NUM_PARTITIONS' in os.environ else None
+    desidered_number_of_partitions = None
     num_events_chunk = os.environ['NUM_EVENTS_CHUNK'] if 'NUM_EVENTS_CHUNK' in os.environ else 10000
     pm4pyws_db_event_logs = os.environ['PM4PYWS_DB_ELOG'] if 'PM4PYWS_DB_ELOG' in os.environ else 'event_logs.db'
 

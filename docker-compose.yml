@@ -29,3 +29,33 @@ services:
             WAIT_FOR_TIMEOUT: 60
         depends_on:
             - 'postgres'
+
+    pm4pyws:
+        image: javert899/pm4pyws:multiNode
+        container_name: pm4pyws
+        ports:
+          - '80:80'
+        volumes:
+          - /app/files:/opt/files
+
+    camunda-exporter:
+        image: javert899/incremental-camunda-parquet-exporter:latest
+        container_name: camunda-exporter
+        volumes:
+          - /app/files:/opt/files
+          - /app/extraction_consts:/opt/extraction_consts
+        environment:
+          TARGET_HOST: postgres
+          TARGET_PATH: /app/extraction_consts/target
+          TIMESTAMP_PATH: /app/extraction_consts/timestamp.dump
+          NO_PARTITIONS: /app/extraction_consts/no_part.dump
+          POSTGRES_USER: camunda
+          POSTGRES_PASSWORD: camunda
+          POSTGRES_DB: process-engine
+          SLEEP_SCHEDULE: 600
+          NUM_EVENTS_PARTITION: 10000
+          NUM_EVENTS_CHUNK: 10000
+          PM4PYWS_DB_ELOG: /app/files/databases/event_logs.db
+        depends_on:
+          - 'postgres'
+          - 'pm4pyws'
