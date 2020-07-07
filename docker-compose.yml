@@ -58,4 +58,4 @@ services:
           PM4PYWS_DB_ELOG: /app/files/databases/event_logs.db
         depends_on:
           - 'postgres'
-
+          - 'camunda'
